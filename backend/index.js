@@ -34,7 +34,7 @@ app.use('/api/user', userRoutes) // http://localhost:3000/api/user/
 app.use('/api/auth', authRoutes)
 
 
-// middleware
+// error handling middleware
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500 
   const message = err.message || 'Internal Server Error'
