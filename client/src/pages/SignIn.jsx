@@ -1,12 +1,18 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 
-export default function SignIn() {
+import { signInStart, signInSucess, signInFailure } from '../redux/user/userSlice'
+import { useDispatch, useSelector } from 'react-redux'
 
-  const [formData, setFormData] = useState({})
-  const [error, setError] = useState(false)
-  const [loading, setLoading] = useState(false)
+export default function SignIn() {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const [formData, setFormData] = useState({})
+
+  // const [error, setError] = useState(false)
+  // const [loading, setLoading] = useState(false)
+  const { loading, error } = useSelector((state) => state.user) // get state of user slice 
+  console.log(loading, error) 
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value })
@@ -15,8 +21,9 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      setLoading(true)
-      setError(false)
+      // setLoading(true)
+      // setError(false)
+      dispatch(signInStart()) // set loading to true 
       const res = await fetch('/api/auth/signin', {
         method: 'POST',
         headers: {
@@ -25,15 +32,18 @@ export default function SignIn() {
         body: JSON.stringify(formData)
       })
       const data = await res.json()
-      setLoading(false)
+      // setLoading(false)
       if (data.success === false) {
-        setError(true)
+        // setError(true)
+        dispatch(signInFailure(data))
         return
       }
+      dispatch(signInSucess(data))
       navigate('/')
     } catch (err) {
-      setLoading(false)
-      setError(true)
+      dispatch(signInFailure(err))
+      // setLoading(false)
+      // setError(true)
       console.log(err)
     }
   } 
@@ -72,7 +82,7 @@ export default function SignIn() {
           <span className='text-blue-500'>Sign up</span>
         </Link>
       </div>
-      <p className='text-red-700 mt-5'>{error && 'something went wrong!'}</p>
+      <p className='text-red-700 mt-5'>{error ? error.message || 'something went wrong!' : ''}</p>
     </div>
   )
 }
