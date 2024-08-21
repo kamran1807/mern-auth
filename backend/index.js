@@ -1,9 +1,9 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
-
 import userRoutes from './routes/user.route.js'
 import authRoutes from './routes/auth.route.js'
+import cookieParser from 'cookie-parser'
 
 // initialize dotenv
 dotenv.config()
@@ -20,8 +20,11 @@ mongoose.connect(process.env.MONGO)
 // create instance of Express application
 const app = express() 
 
-// allowused parsing of incoming JSON requests
+// allows parsing of incoming JSON requests
 app.use(express.json())
+
+// allows parsing of cookies 
+app.use(cookieParser())
 
 // listen to port 
 app.listen(3000, () => {
