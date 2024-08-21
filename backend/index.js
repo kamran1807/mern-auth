@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import userRoutes from './routes/user.route.js'
 import authRoutes from './routes/auth.route.js'
 import cookieParser from 'cookie-parser'
+import path from 'path'
 
 // initialize dotenv
 dotenv.config()
@@ -17,8 +18,17 @@ mongoose.connect(process.env.MONGO)
     console.log(err)
   })
 
+// find dynamic directory name anywhere in server 
+const __dirname = path.resolve()
+
 // create instance of Express application
 const app = express() 
+
+// static folder 
+app.use(express.static(path.join(__dirname, '/client/dist')))
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'))
+})
 
 // allows parsing of incoming JSON requests
 app.use(express.json())
