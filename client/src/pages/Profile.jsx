@@ -9,7 +9,8 @@ import {
   updateUserStart, 
   deleteUserStart,
   deleteUserSuccess,
-  deleteUserFailure 
+  deleteUserFailure,
+  signOut
 } from '../redux/user/userSlice'
 
 export default function Profile() {
@@ -90,6 +91,15 @@ export default function Profile() {
     }
   }
 
+  const handleSignOut = async () => {
+    try {
+      await fetch('/api/auth/signout')
+      dispatch(signOut())
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   useEffect(() => {
     if (image) {
       handleFileUpload(image)
@@ -164,7 +174,7 @@ export default function Profile() {
 
       <div className='flex justify-between mt-5'>
         <span className='text-red-700 cursor-pointer' onClick={handleDeleteAccount}>Delete Account</span>
-        <span className='text-red-700 cursor-pointer'>Sign Out</span>
+        <span className='text-red-700 cursor-pointer' onClick={handleSignOut}>Sign Out</span>
       </div>
 
       <p className='text-red-700 mt-5'>{error && 'something went wrong'}</p>
